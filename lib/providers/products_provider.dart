@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/models/http_exception.dart';
+import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/providers/product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:provider/provider.dart';
+
 class ProductsProvider with ChangeNotifier {
-  List<Product> _items = [
-  ];
-
-
+  List<Product> _items = [];
 
   bool _showFavorite = false;
 
@@ -38,8 +38,8 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    final url = Uri.https(
-        'my-shop-bd701-default-rtdb.firebaseio.com', '/products.json');
+    final url =
+        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com', '/products.json');
     // const url = 'https://my-shop-bd701-default-rtdb.firebaseio.com/products.json';
     try {
       final response = await http.post(
@@ -71,7 +71,7 @@ class ProductsProvider with ChangeNotifier {
     final int productIndex = _items.indexWhere((prod) => prod.id == id);
     if (productIndex >= 0) {
       final url = Uri.https(
-          'my-shop-bd701-default-rtdb.firebaseio.com', '/products/$id.json');
+          'myshop-f49b2-default-rtdb.firebaseio.com', '/products/$id.json');
       await http.patch(url,
           body: json.encode({
             'title': newProduct.title,
@@ -88,32 +88,28 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.https(
-        'my-shop-bd701-default-rtdb.firebaseio.com', '/products/$id.json');
+        'myshop-f49b2-default-rtdb.firebaseio.com', '/products/$id.json');
     final int existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
-     notifyListeners();
-     final response = await http.delete(url);
-    
-      if(response.statusCode >= 400) {
-        _items.insert(existingProductIndex, existingProduct);
     notifyListeners();
-        throw HttpException('Could not delete product');
-        
-      }
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpException('Could not delete product');
+    }
     existingProduct = null;
-
-      
-
-     
   }
 
-  Future<void> fetchAndSetProducts() async {
-    final url = Uri.https(
-        'my-shop-bd701-default-rtdb.firebaseio.com', '/products.json');
-        
+  Future<void> fetchAndSetProducts(BuildContext ctx) async {
+    final url =
+        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com', '/products.json', {'auth' : Provider.of<AuthProvider>(ctx, listen: false).token});
+
     try {
       final response = await http.get(url);
+      print('YAY fetch and set ${response.body}');
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;

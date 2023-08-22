@@ -21,6 +21,7 @@ class AuthProvider with ChangeNotifier {
     }
     return null;
   }
+  
 
   Future<void> _authenticate(
     String email,
@@ -28,7 +29,7 @@ class AuthProvider with ChangeNotifier {
     String urlSegment,
   ) async {
     final url = Uri.parse(
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyA_zHrcWoUa3U9Ct-iSCjrKShLjARhfGmE');
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyAU70q6bu-ds-UdfOtTcV_p91jRNnhjWik');
     try {
       final response = await http.post(
         url,
@@ -38,10 +39,13 @@ class AuthProvider with ChangeNotifier {
           'returnSecureToken': true,
         }),
       );
+      print('YAY body => ${json.decode(response.body)}');
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
+        print('error');
         throw HttpException(responseData['error']['message']);
       }
+      print('after error');
       _token = responseData['idToken'];
       _userId = responseData['localId'];
       _expiryDate = DateTime.now().add(
@@ -54,7 +58,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> signup(String email, String password) async {
-    return _authenticate(email, password, 'signInWithCustomToken');
+    return _authenticate(email, password, 'signUp');
   }
 
   Future<void> login(String email, String password) async {

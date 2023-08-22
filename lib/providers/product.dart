@@ -28,7 +28,7 @@ class Product with ChangeNotifier {
     final bool oldStatus = isFavorite;
 
     final url = Uri.https(
-        'my-shop-bd701-default-rtdb.firebaseio.com', '/products/$id.json?auth=$token');
+        'myshop-f49b2-default-rtdb.firebaseio.com', '/products/$id.json?auth=$token');
 
     isFavorite = !isFavorite;
     notifyListeners();

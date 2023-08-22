@@ -1,9 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:my_shop/models/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:my_shop/models/order_item_data.dart';
+import 'package:my_shop/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class Order with ChangeNotifier {
   List<OrderItemData> _orders = [];
@@ -12,13 +13,13 @@ class Order with ChangeNotifier {
     return [..._orders];
   }
 
-  Future<void> fetchAndSetOrders() async {
-    final url = 
-        Uri.https('my-shop-bd701-default-rtdb.firebaseio.com', '/orders.json');
+  Future<void> fetchAndSetOrders(BuildContext ctx) async {
+    final url =
+        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com','/orders.json', {'auth' : Provider.of<AuthProvider>(ctx, listen: false).token});
     final response = await http.get(url);
     final List<OrderItemData> loadedOrders = [];
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
-    if(extractedData == null) {
+    if (extractedData == null) {
       return;
     }
     extractedData.forEach((orderId, orderData) {
@@ -41,23 +42,26 @@ class Order with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+  Future<void> addOrder(List<CartItem> cartProducts, double total, BuildContext ctx) async {
     final timestamp = DateTime.now();
     final url =
-        Uri.https('my-shop-bd701-default-rtdb.firebaseio.com', '/orders.json');
-    final response = await http.post(url,
-        body: json.encode({
-          'amount': total,
-          'dateTime': timestamp.toIso8601String(),
-          'products': cartProducts
-              .map((cp) => {
-                    'id': cp.id,
-                    'title': cp.title,
-                    'quantity': cp.quantity,
-                    'price': cp.price,
-                  })
-              .toList(),
-        }));
+        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com', '/orders.json', {'auth' : Provider.of<AuthProvider>(ctx, listen: false).token});
+    final response = await http.post(
+      url,
+      body: json.encode({
+        'amount': total,
+        'dateTime': timestamp.toIso8601String(),
+        'products': cartProducts
+            .map((cp) => {
+                  'id': cp.id,
+                  'title': cp.title,
+                  'quantity': cp.quantity,
+                  'price': cp.price,
+                })
+            .toList(),
+      }),
+    );
+    print('YAY => addOrder ${response.body}');
     _orders.insert(
         0,
         OrderItemData(
