@@ -13,7 +13,7 @@ import 'package:my_shop/screens/products_overview_screen.dart';
 import 'package:my_shop/screens/user_products_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
             create: (ctx) => ProductsProvider(),
           ),
           ChangeNotifierProvider(
-            create: (context) => Cart(),
+            create: (context) => CartProvider(),
           ),
           ChangeNotifierProvider.value(value: Order())
         ],
@@ -36,15 +36,19 @@ class MyApp extends StatelessWidget {
           builder: (ctx, auth, _) => MaterialApp(
             title: 'MyShop',
             theme: ThemeData(
-              primarySwatch: Colors.purple,
-              accentColor: Colors.deepOrange,
+              // primarySwatch: Colors.purple,
+              colorScheme: const ColorScheme.light(
+                secondary: Colors.deepOrange,
+                primary: Colors.purple,
+              ),
               fontFamily: 'Lato',
-              pageTransitionsTheme: PageTransitionsTheme(builders: {
-                TargetPlatform.android: CustomPageTransitionBuilder(),
-                TargetPlatform.iOS: CustomPageTransitionBuilder(),
-              })
+              pageTransitionsTheme: PageTransitionsTheme(
+                builders: {
+                  TargetPlatform.android: CustomPageTransitionBuilder(),
+                  TargetPlatform.iOS: CustomPageTransitionBuilder(),
+                },
+              ),
             ),
-
             home: auth.isAuth ? const ProductsOverviewScreen() : AuthScreen(),
             routes: {
               ProductDetailScreen.routeName: (context) =>

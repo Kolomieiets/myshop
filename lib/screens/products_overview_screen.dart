@@ -24,12 +24,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool _isInit = true;
   var _isLoading = false;
 
-
   @override
   void initState() {
-//   Future.delayed(Duration.zero).then((_) {
-// Provider.of<ProductsProvider>(context).fetchAndSetProducts();
-//   });
     super.initState();
   }
 
@@ -49,17 +45,16 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     super.didChangeDependencies();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final productsContainer =
-        Provider.of<ProductsProvider>(context, listen: false);
+    // final productsContainer =
+    //     Provider.of<ProductsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyShop'),
         actions: [
           PopupMenuButton(
-              onSelected: (FilterOptions selectedValue) {
+            onSelected: (FilterOptions selectedValue) {
               setState(() {
                 if (selectedValue == FilterOptions.favorite) {
                   _showOnlyFavorites = true;
@@ -68,19 +63,20 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 }
               });
             },
-              icon: const Icon(Icons.more_vert),
-              itemBuilder: ((context) => [
-                    const PopupMenuItem(
-                      value: FilterOptions.favorite,
-                      child: Text('Only favorites'),
-                    ),
-                    const PopupMenuItem(
-                      value: FilterOptions.all,
-                      child: Text('Show all'),
-                    ),
-                  ])),
-          Consumer<Cart>(
-            builder: (_, cart, ch) => Badge(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: ((context) => [
+                  const PopupMenuItem(
+                    value: FilterOptions.favorite,
+                    child: Text('Only favorites'),
+                  ),
+                  const PopupMenuItem(
+                    value: FilterOptions.all,
+                    child: Text('Show all'),
+                  ),
+                ]),
+          ),
+          Consumer<CartProvider>(
+            builder: (_, cart, ch) => MyBadge(
               value: cart.itemCount.toString(),
               child: ch!,
             ),
@@ -94,7 +90,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: _isLoading ? Center(child:CircularProgressIndicator()) : ProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ProductsGrid(_showOnlyFavorites),
     );
   }
 }

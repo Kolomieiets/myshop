@@ -1,43 +1,29 @@
 import 'package:flutter/foundation.dart';
-import 'package:my_shop/providers/cart.dart';
+import 'package:my_shop/models/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-
-class OrderItemProvider {
-  final String id;
-  final double amount;
-  final List<CartItem> products;
-  final DateTime dateTime;
-
-  OrderItemProvider({
-    required this.amount,
-    required this.dateTime,
-    required this.id,
-    required this.products,
-  });
-}
+import 'package:my_shop/models/order_item_data.dart';
 
 class Order with ChangeNotifier {
-  List<OrderItemProvider> _orders = [];
+  List<OrderItemData> _orders = [];
 
-  List<OrderItemProvider> get orders {
+  List<OrderItemData> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
-    final url =
+    final url = 
         Uri.https('my-shop-bd701-default-rtdb.firebaseio.com', '/orders.json');
     final response = await http.get(url);
-    final List<OrderItemProvider> loadedOrders = [];
+    final List<OrderItemData> loadedOrders = [];
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
     if(extractedData == null) {
       return;
     }
     extractedData.forEach((orderId, orderData) {
       loadedOrders.add(
-        OrderItemProvider(
+        OrderItemData(
           id: orderId,
           amount: orderData['amount'],
           dateTime: DateTime.parse(orderData['dateTime']),
@@ -74,7 +60,7 @@ class Order with ChangeNotifier {
         }));
     _orders.insert(
         0,
-        OrderItemProvider(
+        OrderItemData(
           id: json.decode(response.body)['name'],
           amount: total,
           products: cartProducts,

@@ -10,7 +10,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<Cart>(context);
+    final cart = Provider.of<CartProvider>(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Your cart')),
@@ -65,7 +65,7 @@ class OrderButton extends StatefulWidget {
     required this.cart,
   }) : super(key: key);
 
-  final Cart cart;
+  final CartProvider cart;
 
   @override
   State<OrderButton> createState() => _OrderButtonState();

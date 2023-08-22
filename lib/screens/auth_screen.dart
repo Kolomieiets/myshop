@@ -59,13 +59,10 @@ class AuthScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      child: Text(
+                      child: const Text(
                         'MyShop',
                         style: TextStyle(
-                          color: Theme.of(context)
-                              .accentTextTheme
-                              .titleMedium!
-                              .color,
+                          color: Colors.white,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
@@ -75,7 +72,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Flexible(
                     flex: deviceSize.width > 600 ? 2 : 1,
-                    child: AuthCard(),
+                    child: const AuthCard(),
                   ),
                 ],
               ),

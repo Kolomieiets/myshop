@@ -6,9 +6,6 @@ import 'package:my_shop/screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
-  // final String id;
-  // final String title;
-  // final String imageUrl;
 
   const ProductItem({super.key});
 
@@ -18,7 +15,7 @@ class ProductItem extends StatelessWidget {
       context,
       listen: false,
     );
-    final cart = Provider.of<Cart>(context, listen: false);
+    final cart = Provider.of<CartProvider>(context, listen: false);
     final authData = Provider.of<AuthProvider>(context, listen: false);
 
     return ClipRRect(
@@ -30,8 +27,7 @@ class ProductItem extends StatelessWidget {
             builder: (ctx, product, _) => IconButton(
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
-              color: Theme.of(context).accentColor,
-              // color: Colors.blueAccent,
+              color: Theme.of(context).colorScheme.secondary,
               onPressed: () {
                 product.toggleFavoriteStatus(authData.token!);
               },
@@ -43,7 +39,7 @@ class ProductItem extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart),
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             onPressed: () {
               cart.addItem(product.id!, product.title, product.price);
               ScaffoldMessenger.of(context).hideCurrentSnackBar();

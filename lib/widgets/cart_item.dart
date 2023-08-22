@@ -58,7 +58,7 @@ class ChosenCartItem extends StatelessWidget {
             });
       },
       onDismissed: (direction) {
-        Provider.of<Cart>(context, listen: false).removeItem(productId);
+        Provider.of<CartProvider>(context, listen: false).removeItem(productId);
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),

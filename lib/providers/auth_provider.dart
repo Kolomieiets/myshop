@@ -23,8 +23,12 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> _authenticate(
-      String email, String password, String urlSegment,) async {
-    final url = Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyA_zHrcWoUa3U9Ct-iSCjrKShLjARhfGmE');
+    String email,
+    String password,
+    String urlSegment,
+  ) async {
+    final url = Uri.parse(
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyA_zHrcWoUa3U9Ct-iSCjrKShLjARhfGmE');
     try {
       final response = await http.post(
         url,
@@ -41,9 +45,7 @@ class AuthProvider with ChangeNotifier {
       _token = responseData['idToken'];
       _userId = responseData['localId'];
       _expiryDate = DateTime.now().add(
-        Duration(
-          seconds: int.parse(responseData['expiresIn'])
-        ),
+        Duration(seconds: int.parse(responseData['expiresIn'])),
       );
       notifyListeners();
     } catch (error) {
