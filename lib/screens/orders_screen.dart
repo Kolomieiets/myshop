@@ -16,7 +16,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Future? _ordersFuture;
 
   Future _obtainOrdersFuture() {
-    return Provider.of<Order>(context, listen: false).fetchAndSetOrders(context);
+    return Provider.of<Order>(context, listen: false)
+        .fetchAndSetOrders(context);
   }
 
   @override
@@ -24,6 +25,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     _ordersFuture = _obtainOrdersFuture();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +41,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 child: CircularProgressIndicator(),
               );
             } else if (dataSnapshot.error != null) {
+              print('YAY dataSnapshot.error  => ${dataSnapshot.error }');
               return const Center(
                 child: Text('An error occurred!'),
               );

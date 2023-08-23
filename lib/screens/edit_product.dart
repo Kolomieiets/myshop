@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/providers/product.dart';
 import 'package:my_shop/providers/products_provider.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +18,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlController = TextEditingController();
   String string = '';
   final _form = GlobalKey<FormState>();
-  Product _editedProduct =
-      Product(id: null, title: '', price: 0, description: '', imageUrl: '');
+  late Product _editedProduct;
 
   bool _isInit = true;
   bool _isLoading = false;
@@ -40,6 +40,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   @override
   void didChangeDependencies() {
+    _editedProduct = Product(
+        // userId: Provider.of<AuthProvider>(context, listen: false).id,
+        id: null,
+        title: '',
+        price: 0,
+        description: '',
+        imageUrl: '');
     if (_isInit) {
       final productId = ModalRoute.of(context)!.settings.arguments as String?;
       if (productId != null) {
@@ -91,12 +98,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
     });
     if (_editedProduct.id != null) {
+      _editedProduct.userId =
+            Provider.of<AuthProvider>(context, listen: false).id;
       await Provider.of<ProductsProvider>(context, listen: false)
-          .updateProduct(_editedProduct.id!, _editedProduct);
+          .updateProduct(_editedProduct.id!, _editedProduct, context);
     } else {
       try {
+        _editedProduct.userId =
+            Provider.of<AuthProvider>(context, listen: false).id;
         await Provider.of<ProductsProvider>(context, listen: false)
-            .addProduct(_editedProduct);
+            .addProduct(_editedProduct, context);
       } catch (error) {
         await showDialog(
           context: context,
@@ -113,12 +124,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ),
         );
       }
-      // finally {
-      //   setState(() {
-      //     _isLoading = false;
-      //   });
-      //   Navigator.of(context).pop();
-      // }
     }
     setState(() {
       _isLoading = false;

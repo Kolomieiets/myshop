@@ -37,10 +37,11 @@ class ProductsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addProduct(Product product) async {
-    final url =
-        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com', '/products.json');
-    // const url = 'https://my-shop-bd701-default-rtdb.firebaseio.com/products.json';
+  Future<void> addProduct(Product product, BuildContext ctx) async {
+    final url = Uri.https(
+        'myshop-f49b2-default-rtdb.firebaseio.com',
+        '/products.json',
+        {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
     try {
       final response = await http.post(
         url,
@@ -50,6 +51,7 @@ class ProductsProvider with ChangeNotifier {
           'price': product.price,
           'imageUrl': product.imageUrl,
           'isFavorite': product.isFavorite,
+          'userId': product.userId,
         }),
       );
       final Product newProduct = Product(
@@ -58,6 +60,7 @@ class ProductsProvider with ChangeNotifier {
         description: product.description,
         price: product.price,
         imageUrl: product.imageUrl,
+        userId: product.userId,
       );
       _items.insert(0, newProduct);
       notifyListeners();
@@ -67,17 +70,22 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateProduct(String id, Product newProduct) async {
+  Future<void> updateProduct(
+      String id, Product newProduct, BuildContext ctx) async {
     final int productIndex = _items.indexWhere((prod) => prod.id == id);
     if (productIndex >= 0) {
       final url = Uri.https(
-          'myshop-f49b2-default-rtdb.firebaseio.com', '/products/$id.json');
-      await http.patch(url,
+          'myshop-f49b2-default-rtdb.firebaseio.com',
+          '/products/$id.json',
+          {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
+      print('YAY newProduct.userId => ${newProduct.userId}');
+      await http.put(url,
           body: json.encode({
             'title': newProduct.title,
             'description': newProduct.description,
             'price': newProduct.price,
             'imageUrl': newProduct.imageUrl,
+            'userId': newProduct.userId,
           }));
       _items[productIndex] = newProduct;
       notifyListeners();
@@ -86,9 +94,11 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct(String id) async {
+  Future<void> deleteProduct(String id, BuildContext ctx) async {
     final url = Uri.https(
-        'myshop-f49b2-default-rtdb.firebaseio.com', '/products/$id.json');
+        'myshop-f49b2-default-rtdb.firebaseio.com',
+        '/products/$id.json',
+        {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
     final int existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
@@ -104,26 +114,29 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts(BuildContext ctx) async {
-    final url =
-        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com', '/products.json', {'auth' : Provider.of<AuthProvider>(ctx, listen: false).token});
+    final url = Uri.https(
+        'myshop-f49b2-default-rtdb.firebaseio.com',
+        '/products.json',
+        {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
 
     try {
       final response = await http.get(url);
-      print('YAY fetch and set ${response.body}');
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final extractedData = json.decode(response.body);
       if (extractedData == null) {
         return;
       }
+      print('YAY extractedData => $extractedData');
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(
           Product(
             id: prodId,
+            userId: prodData['userId'],
             title: prodData['title'],
             description: prodData['description'],
             price: prodData['price'],
             imageUrl: prodData['imageUrl'],
-            isFavorite: prodData['isFavorite'],
+            isFavorite: prodData['isFavorite'] ?? false,
           ),
         );
       });

@@ -14,11 +14,13 @@ class Order with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders(BuildContext ctx) async {
-    final url =
-        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com','/orders.json', {'auth' : Provider.of<AuthProvider>(ctx, listen: false).token});
+    final url = Uri.https(
+        'myshop-f49b2-default-rtdb.firebaseio.com',
+        '/orders/${Provider.of<AuthProvider>(ctx, listen: false).id}.json',
+        {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
     final response = await http.get(url);
     final List<OrderItemData> loadedOrders = [];
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    final extractedData = json.decode(response.body);
     if (extractedData == null) {
       return;
     }
@@ -42,10 +44,13 @@ class Order with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addOrder(List<CartItem> cartProducts, double total, BuildContext ctx) async {
+  Future<void> addOrder(
+      List<CartItem> cartProducts, double total, BuildContext ctx) async {
     final timestamp = DateTime.now();
-    final url =
-        Uri.https('myshop-f49b2-default-rtdb.firebaseio.com', '/orders.json', {'auth' : Provider.of<AuthProvider>(ctx, listen: false).token});
+    final url = Uri.https(
+        'myshop-f49b2-default-rtdb.firebaseio.com',
+        '/orders/${Provider.of<AuthProvider>(ctx, listen: false).id}.json',
+        {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
     final response = await http.post(
       url,
       body: json.encode({

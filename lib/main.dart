@@ -13,7 +13,11 @@ import 'package:my_shop/screens/products_overview_screen.dart';
 import 'package:my_shop/screens/user_products_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(const MyApp());
+
+// TODO(Valentyna): updating product crash userId
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

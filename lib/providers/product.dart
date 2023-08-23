@@ -1,9 +1,14 @@
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:my_shop/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
+
 class Product with ChangeNotifier {
   final String? id;
+  late String? userId;
   final String title;
   final String description;
   final double price;
@@ -12,6 +17,7 @@ class Product with ChangeNotifier {
 
   Product({
     required this.id,
+    this.userId,
     required this.title,
     required this.description,
     required this.price,
@@ -24,13 +30,15 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavoriteStatus(String token) async {
+  Future<void> toggleFavoriteStatus(String token, BuildContext ctx) async {
     final bool oldStatus = isFavorite;
-
-    final url = Uri.https(
-        'myshop-f49b2-default-rtdb.firebaseio.com', '/products/$id.json?auth=$token');
+    print('YAY isFavorite => $isFavorite');
+    final url = Uri.https('myshop-f49b2-default-rtdb.firebaseio.com',
+        '/products/$id.json', {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
 
     isFavorite = !isFavorite;
+
+    print('YAY oldStatus => $oldStatus');
     notifyListeners();
     try {
       final response = await http.patch(
@@ -41,6 +49,7 @@ class Product with ChangeNotifier {
         _setFavValue(oldStatus);
       }
     } catch (error) {
+      print('YAY => error $error');
       _setFavValue(oldStatus);
     }
   }

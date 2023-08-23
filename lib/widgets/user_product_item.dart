@@ -37,7 +37,7 @@ class UserProductItem extends StatelessWidget {
               onPressed: () async {
                 try {
                   await Provider.of<ProductsProvider>(context, listen: false)
-                      .deleteProduct(id);
+                      .deleteProduct(id, context);
                 } catch (error) {
                   scaffold.showSnackBar(
                     const SnackBar(

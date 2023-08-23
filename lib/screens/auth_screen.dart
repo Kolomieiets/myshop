@@ -5,18 +5,17 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 
-enum AuthMode { Signup, Login }
+enum AuthMode { signup, login }
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
 
+  const AuthScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
-    // transformConfig.translate(-10.0);
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           Container(
@@ -96,8 +95,8 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
-  Map<String, String> _authData = {
+  AuthMode _authMode = AuthMode.login;
+  final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
@@ -151,7 +150,7 @@ class _AuthCardState extends State<AuthCard>
       _isLoading = true;
     });
     try {
-      if (_authMode == AuthMode.Login) {
+      if (_authMode == AuthMode.login) {
         // Log user in
         //await Provider.of<AuthProvider>(context, listen: false).login(_authData['email']!, _authData['password']!);
         await context
@@ -189,14 +188,14 @@ class _AuthCardState extends State<AuthCard>
   }
 
   void _switchAuthMode() {
-    if (_authMode == AuthMode.Login) {
+    if (_authMode == AuthMode.login) {
       setState(() {
-        _authMode = AuthMode.Signup;
+        _authMode = AuthMode.signup;
       });
       _controller!.forward();
     } else {
       setState(() {
-        _authMode = AuthMode.Login;
+        _authMode = AuthMode.login;
       });
       _controller!.reverse();
     }
@@ -213,10 +212,10 @@ class _AuthCardState extends State<AuthCard>
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeIn,
-        height: _authMode == AuthMode.Signup ? 320 : 260,
+        height: _authMode == AuthMode.signup ? 320 : 260,
         // height: _heightAnimation!.value.height,
         constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+            BoxConstraints(minHeight: _authMode == AuthMode.signup ? 320 : 260),
         width: deviceSize.width * 0.75,
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -250,11 +249,11 @@ class _AuthCardState extends State<AuthCard>
                     _authData['password'] = value!;
                   },
                 ),
-                if (_authMode == AuthMode.Signup)
+                if (_authMode == AuthMode.signup)
                   AnimatedContainer(
                     constraints: BoxConstraints(
-                      maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
-                      minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                      maxHeight: _authMode == AuthMode.signup ? 120 : 0,
+                      minHeight: _authMode == AuthMode.signup ? 60 : 0,
                     ),
                     duration: Duration(milliseconds: 300),
                     curve: Curves.easeIn,
@@ -263,15 +262,16 @@ class _AuthCardState extends State<AuthCard>
                       child: SlideTransition(
                         position: _slideAnimation!,
                         child: TextFormField(
-                          enabled: _authMode == AuthMode.Signup,
+                          enabled: _authMode == AuthMode.signup,
                           decoration: const InputDecoration(
                               labelText: 'Confirm Password'),
                           obscureText: true,
-                          validator: _authMode == AuthMode.Signup
+                          validator: _authMode == AuthMode.signup
                               ? (value) {
                                   if (value != _passwordController.text) {
                                     return 'Passwords do not match!';
                                   }
+                                  return '';
                                 }
                               : null,
                         ),
@@ -285,28 +285,27 @@ class _AuthCardState extends State<AuthCard>
                   const CircularProgressIndicator()
                 else
                   ElevatedButton(
-                    child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 8.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                       backgroundColor: Theme.of(context).primaryColor,
-                      // foregroundColor: Theme.of(context).primaryTextTheme.button.color,
                     ),
+                    child:
+                        Text(_authMode == AuthMode.login ? 'LOGIN' : 'SIGN UP'),
                   ),
                 TextButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 4),
                       foregroundColor: Theme.of(context).primaryColor,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                  child: Text(
+                      '${_authMode == AuthMode.login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                 )
               ],
             ),

@@ -21,7 +21,8 @@ class AuthProvider with ChangeNotifier {
     }
     return null;
   }
-  
+
+  String? get id => _userId;
 
   Future<void> _authenticate(
     String email,
@@ -39,13 +40,14 @@ class AuthProvider with ChangeNotifier {
           'returnSecureToken': true,
         }),
       );
-      print('YAY body => ${json.decode(response.body)}');
+
+    // print('YAY id ->${response.body}');
+      // print('YAY body => ${json.decode(response.body)}');
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
         print('error');
         throw HttpException(responseData['error']['message']);
       }
-      print('after error');
       _token = responseData['idToken'];
       _userId = responseData['localId'];
       _expiryDate = DateTime.now().add(
