@@ -14,7 +14,6 @@ import 'package:my_shop/screens/user_products_screen.dart';
 import 'package:provider/provider.dart';
 
 
-// TODO(Valentyna): updating product crash userId
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());}
