@@ -65,8 +65,7 @@ class ProductsProvider with ChangeNotifier {
       _items.insert(0, newProduct);
       notifyListeners();
     } catch (error) {
-      print(error);
-      throw (error);
+      rethrow;
     }
   }
 
@@ -78,7 +77,6 @@ class ProductsProvider with ChangeNotifier {
           'myshop-f49b2-default-rtdb.firebaseio.com',
           '/products/$id.json',
           {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
-      print('YAY newProduct.userId => ${newProduct.userId}');
       await http.put(url,
           body: json.encode({
             'title': newProduct.title,
@@ -89,8 +87,6 @@ class ProductsProvider with ChangeNotifier {
           }));
       _items[productIndex] = newProduct;
       notifyListeners();
-    } else {
-      print('...');
     }
   }
 
@@ -125,7 +121,6 @@ class ProductsProvider with ChangeNotifier {
       if (extractedData == null) {
         return;
       }
-      print('YAY extractedData => $extractedData');
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(

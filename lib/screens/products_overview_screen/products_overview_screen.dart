@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/providers/cart.dart';
 import 'package:my_shop/providers/products_provider.dart';
-import 'package:my_shop/screens/badge.dart';
-import 'package:my_shop/screens/cart_screen.dart';
+import 'package:my_shop/screens/products_overview_screen/components/badge.dart';
+import 'package:my_shop/screens/cart_screen/cart_screen.dart';
 import 'package:my_shop/widgets/app_drawer.dart';
-import 'package:my_shop/widgets/products_grid.dart';
+import 'package:my_shop/screens/products_overview_screen/components/products_grid.dart';
 import 'package:provider/provider.dart';
 
 enum FilterOptions {
@@ -49,8 +49,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final productsContainer =
-    //     Provider.of<ProductsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyShop'),

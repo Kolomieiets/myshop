@@ -26,7 +26,7 @@ class ChosenCartItem extends StatelessWidget {
         alignment: Alignment.centerRight,
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
         padding: const EdgeInsets.only(right: 20),
-        color: Theme.of(context).errorColor,
+        color: Theme.of(context).colorScheme.error,
         child: const Icon(
           Icons.delete,
           color: Colors.white,

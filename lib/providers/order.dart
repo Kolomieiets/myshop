@@ -66,7 +66,6 @@ class Order with ChangeNotifier {
             .toList(),
       }),
     );
-    print('YAY => addOrder ${response.body}');
     _orders.insert(
         0,
         OrderItemData(

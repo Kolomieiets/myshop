@@ -41,11 +41,8 @@ class AuthProvider with ChangeNotifier {
         }),
       );
 
-    // print('YAY id ->${response.body}');
-      // print('YAY body => ${json.decode(response.body)}');
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
-        print('error');
         throw HttpException(responseData['error']['message']);
       }
       _token = responseData['idToken'];

@@ -13,7 +13,6 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
-  // final _priceFocusNode = FocusNode();
   final _urlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   String string = '';
@@ -31,22 +30,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
   };
 
   @override
-  void dispose() {
-    _imageUrlController.dispose();
-    _urlFocusNode.dispose();
-    _urlFocusNode.removeListener(_updateImage);
-    super.dispose();
+  void initState() {
+    _urlFocusNode.addListener(_updateImage);
+    super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    _editedProduct = Product(
-        // userId: Provider.of<AuthProvider>(context, listen: false).id,
-        id: null,
-        title: '',
-        price: 0,
-        description: '',
-        imageUrl: '');
+    _editedProduct =
+        Product(id: null, title: '', price: 0, description: '', imageUrl: '');
     if (_isInit) {
       final productId = ModalRoute.of(context)!.settings.arguments as String?;
       if (productId != null) {
@@ -56,7 +48,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
           'price': _editedProduct.price.toString(),
-          // 'imageUrl': _editedProduct.imageUrl,
           'imageUrl': ''
         };
         _imageUrlController.text = _editedProduct.imageUrl;
@@ -67,9 +58,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   @override
-  void initState() {
-    _urlFocusNode.addListener(_updateImage);
-    super.initState();
+  void dispose() {
+    _imageUrlController.dispose();
+    _urlFocusNode.dispose();
+    _urlFocusNode.removeListener(_updateImage);
+    super.dispose();
   }
 
   void _updateImage() {
@@ -85,50 +78,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
       string = _imageUrlController.text;
       setState(() {});
     }
-  }
-
-  Future<void> _saveForm() async {
-    bool isValid = _form.currentState!.validate();
-    if (!isValid) {
-      setState(() {});
-      return;
-    }
-    _form.currentState?.save();
-    setState(() {
-      _isLoading = true;
-    });
-    if (_editedProduct.id != null) {
-      _editedProduct.userId =
-            Provider.of<AuthProvider>(context, listen: false).id;
-      await Provider.of<ProductsProvider>(context, listen: false)
-          .updateProduct(_editedProduct.id!, _editedProduct, context);
-    } else {
-      try {
-        _editedProduct.userId =
-            Provider.of<AuthProvider>(context, listen: false).id;
-        await Provider.of<ProductsProvider>(context, listen: false)
-            .addProduct(_editedProduct, context);
-      } catch (error) {
-        await showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('An error occuured'),
-            content: const Text('Something went wrong'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  child: const Text('Ok'))
-            ],
-          ),
-        );
-      }
-    }
-    setState(() {
-      _isLoading = false;
-    });
-    Navigator.of(context).pop();
   }
 
   @override
@@ -163,7 +112,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             return null;
                           }
                         },
-                        // onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_priceFocusNode),
                         onSaved: (newValue) {
                           _editedProduct = Product(
                             id: _editedProduct.id,
@@ -203,7 +151,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             isFavorite: _editedProduct.isFavorite,
                           );
                         },
-                        // focusNode: _priceFocusNode,
                       ),
                       TextFormField(
                         initialValue: _initValue['description'],
@@ -302,5 +249,53 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   )),
             ),
     );
+  }
+
+  void _closePopUp() {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _saveForm() async {
+    bool isValid = _form.currentState!.validate();
+    if (!isValid) {
+      setState(() {});
+      return;
+    }
+    _form.currentState?.save();
+    setState(() {
+      _isLoading = true;
+    });
+    if (_editedProduct.id != null) {
+      _editedProduct.userId =
+          Provider.of<AuthProvider>(context, listen: false).id;
+      await Provider.of<ProductsProvider>(context, listen: false)
+          .updateProduct(_editedProduct.id!, _editedProduct, context);
+    } else {
+      try {
+        _editedProduct.userId =
+            Provider.of<AuthProvider>(context, listen: false).id;
+        await Provider.of<ProductsProvider>(context, listen: false)
+            .addProduct(_editedProduct, context);
+      } catch (error) {
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('An error occuured'),
+            content: const Text('Something went wrong'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: const Text('Ok'))
+            ],
+          ),
+        );
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+    _closePopUp();
   }
 }

@@ -4,13 +4,13 @@ import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/providers/cart.dart';
 import 'package:my_shop/providers/order.dart';
 import 'package:my_shop/providers/products_provider.dart';
-import 'package:my_shop/screens/auth_screen.dart';
-import 'package:my_shop/screens/cart_screen.dart';
-import 'package:my_shop/screens/edit_product.dart';
-import 'package:my_shop/screens/orders_screen.dart';
-import 'package:my_shop/screens/product_detail_screen.dart';
-import 'package:my_shop/screens/products_overview_screen.dart';
-import 'package:my_shop/screens/user_products_screen.dart';
+import 'package:my_shop/screens/auth_screen/auth_screen.dart';
+import 'package:my_shop/screens/cart_screen/cart_screen.dart';
+import 'package:my_shop/screens/user_products_screen/components/edit_product.dart';
+import 'package:my_shop/screens/order_screen/orders_screen.dart';
+import 'package:my_shop/screens/product_detail_screen/product_detail_screen.dart';
+import 'package:my_shop/screens/products_overview_screen/products_overview_screen.dart';
+import 'package:my_shop/screens/user_products_screen/user_products_screen.dart';
 import 'package:provider/provider.dart';
 
 
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
                 },
               ),
             ),
-            home: auth.isAuth ? const ProductsOverviewScreen() : AuthScreen(),
+            home: auth.isAuth ? const ProductsOverviewScreen() : const AuthScreen(),
             routes: {
               ProductDetailScreen.routeName: (context) =>
                   const ProductDetailScreen(),

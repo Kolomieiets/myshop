@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/order_item_data.dart' as ord;
+import '../../../models/order_item_data.dart' as ord;
 import 'package:intl/intl.dart';
 
 import 'dart:math';

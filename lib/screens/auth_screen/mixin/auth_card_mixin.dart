@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/models/http_exception.dart';
 import 'package:my_shop/providers/auth_provider.dart';
-import 'package:my_shop/screens/auth_screen.dart';
+import 'package:my_shop/screens/auth_screen/auth_screen.dart';
 import 'package:provider/provider.dart';
 
 mixin AuthCardMixin<AuthCard extends StatefulWidget> on State<AuthCard> {

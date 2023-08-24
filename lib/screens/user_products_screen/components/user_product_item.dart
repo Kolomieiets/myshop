@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/providers/products_provider.dart';
-import 'package:my_shop/screens/edit_product.dart';
+import 'package:my_shop/screens/user_products_screen/components/edit_product.dart';
 import 'package:provider/provider.dart';
 
 class UserProductItem extends StatelessWidget {
@@ -30,7 +30,7 @@ class UserProductItem extends StatelessWidget {
                   arguments: id,
                 );
               },
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
             IconButton(
               icon: const Icon(Icons.delete),
@@ -46,7 +46,7 @@ class UserProductItem extends StatelessWidget {
                   );
                 }
               },
-              color: Theme.of(context).errorColor,
+              color: Theme.of(context).colorScheme.error,
             ),
           ],
         ),
