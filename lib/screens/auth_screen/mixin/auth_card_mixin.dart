@@ -44,7 +44,6 @@ final GlobalKey<FormState> formKey = GlobalKey();
       try {
         if (authMode == AuthMode.login) {
           // Log user in
-          //await Provider.of<AuthProvider>(context, listen: false).login(_authData['email']!, _authData['password']!);
           await context
               .read<AuthProvider>()
               .login(authData['email']!, authData['password']!);

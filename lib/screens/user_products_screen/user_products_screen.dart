@@ -15,17 +15,7 @@ class UserProductsScreen extends StatefulWidget {
 }
 
 class _UserProductsScreenState extends State<UserProductsScreen> {
-  Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<ProductsProvider>(context, listen: false)
-        .fetchAndSetProducts(context);
-  }
-
-  @override
-  void initState() {
-    // _refreshProducts(context);
-    super.initState();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<ProductsProvider>(context);
@@ -69,5 +59,10 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .fetchAndSetProducts(context);
   }
 }

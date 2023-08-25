@@ -14,13 +14,16 @@ class Order with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders(BuildContext ctx) async {
+    final AuthProvider provider = Provider.of<AuthProvider>(ctx, listen: false);
     final url = Uri.https(
-        'myshop-f49b2-default-rtdb.firebaseio.com',
-        '/orders/${Provider.of<AuthProvider>(ctx, listen: false).id}.json',
-        {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
+      'myshop-f49b2-default-rtdb.firebaseio.com',
+      '/orders/${provider.id}.json',
+      {'auth': provider.token},
+    );
     final response = await http.get(url);
     final List<OrderItemData> loadedOrders = [];
     final extractedData = json.decode(response.body);
+
     if (extractedData == null) {
       return;
     }
@@ -31,11 +34,14 @@ class Order with ChangeNotifier {
           amount: orderData['amount'],
           dateTime: DateTime.parse(orderData['dateTime']),
           products: (orderData['products'] as List<dynamic>)
-              .map((item) => CartItem(
+              .map(
+                (item) => CartItem(
                   id: item['id'],
                   title: item['title'],
                   price: item['price'],
-                  quantity: item['quantity']))
+                  quantity: item['quantity'],
+                ),
+              )
               .toList(),
         ),
       );
@@ -45,12 +51,17 @@ class Order with ChangeNotifier {
   }
 
   Future<void> addOrder(
-      List<CartItem> cartProducts, double total, BuildContext ctx) async {
-    final timestamp = DateTime.now();
+    List<CartItem> cartProducts,
+    double total,
+    BuildContext ctx,
+  ) async {
+    final AuthProvider provider = Provider.of<AuthProvider>(ctx, listen: false);
+    final DateTime timestamp = DateTime.now();
     final url = Uri.https(
-        'myshop-f49b2-default-rtdb.firebaseio.com',
-        '/orders/${Provider.of<AuthProvider>(ctx, listen: false).id}.json',
-        {'auth': Provider.of<AuthProvider>(ctx, listen: false).token});
+      'myshop-f49b2-default-rtdb.firebaseio.com',
+      '/orders/${provider.id}.json',
+      {'auth': provider.token},
+    );
     final response = await http.post(
       url,
       body: json.encode({

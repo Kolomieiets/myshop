@@ -19,8 +19,9 @@ class _AuthCardState extends State<AuthCard>
     controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
     slideAnimation = Tween<Offset>(
-            begin: const Offset(0, -1.5), end: const Offset(0.0, 0.0))
-        .animate(CurvedAnimation(parent: controller!, curve: Curves.linear));
+      begin: const Offset(0, -1.5),
+      end: const Offset(0.0, 0.0),
+    ).animate(CurvedAnimation(parent: controller!, curve: Curves.linear));
     opacityAnimation = Tween(begin: 0.0, end: 1.0)
         .animate(CurvedAnimation(parent: controller!, curve: Curves.easeIn));
   }
@@ -34,6 +35,7 @@ class _AuthCardState extends State<AuthCard>
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -43,8 +45,9 @@ class _AuthCardState extends State<AuthCard>
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeIn,
         height: authMode == AuthMode.signup ? 320 : 260,
-        constraints:
-            BoxConstraints(minHeight: authMode == AuthMode.signup ? 320 : 260),
+        constraints: BoxConstraints(
+          minHeight: authMode == AuthMode.signup ? 320 : 260,
+        ),
         width: deviceSize.width * 0.75,
         padding: const EdgeInsets.all(16.0),
         child: Form(

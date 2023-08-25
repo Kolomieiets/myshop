@@ -6,7 +6,6 @@ import 'package:my_shop/screens/product_detail_screen/product_detail_screen.dart
 import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
-
   const ProductItem({super.key});
 
   @override
@@ -43,7 +42,8 @@ class ProductItem extends StatelessWidget {
             onPressed: () {
               cart.addItem(product.id!, product.title, product.price);
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
                   content: const Text('Added item to cart'),
                   duration: const Duration(seconds: 2),
                   action: SnackBarAction(
@@ -51,7 +51,9 @@ class ProductItem extends StatelessWidget {
                     onPressed: () {
                       cart.removeSingleItem(product.id!);
                     },
-                  )));
+                  ),
+                ),
+              );
             },
           ),
         ),
