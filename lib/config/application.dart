@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/config/custom_route.dart';
 import 'package:my_shop/config/router.dart';
-import 'package:my_shop/providers/auth_provider.dart';
-import 'package:my_shop/providers/cart.dart';
-import 'package:my_shop/providers/order.dart';
-import 'package:my_shop/providers/products_provider.dart';
-import 'package:my_shop/screens/auth_screen/auth_screen.dart';
-import 'package:my_shop/screens/products_overview_screen/products_overview_screen.dart';
+import 'package:my_shop/services/providers/auth_provider.dart';
+import 'package:my_shop/services/providers/cart.dart';
+import 'package:my_shop/services/providers/order.dart';
+import 'package:my_shop/services/providers/products_provider.dart';
+import 'package:my_shop/presentation/screens/auth_screen/auth_screen.dart';
+import 'package:my_shop/presentation/screens/products_overview_screen/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 
 class Application extends StatelessWidget {
