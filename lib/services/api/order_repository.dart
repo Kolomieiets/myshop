@@ -1,54 +1,52 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:my_shop/services/api/api.dart';
+import 'package:my_shop/services/api/order_api.dart';
 import 'package:my_shop/services/models/cart_item.dart';
+import 'package:my_shop/services/models/order_item_data.dart';
+import 'package:my_shop/services/models/order_item_response.dart';
 import 'package:my_shop/services/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class OrderRepository {
-  late final Api _api;
+  late final Dio dio;
 
   OrderRepository() {
-    _api = Api();
+    dio = Dio();
   }
 
-  Future<Map<String, dynamic>?> fetchAndSet(BuildContext ctx) async {
+  Future<List<OrderItemData>?> getOrder(BuildContext ctx) async {
     final AuthProvider provider = Provider.of<AuthProvider>(ctx, listen: false);
-    final Uri url = Uri.https(
-      'myshop-f49b2-default-rtdb.firebaseio.com',
-      '/orders/${provider.id}.json',
-      {'auth': provider.token},
-    );
-    final response = await _api.get(url.toString());
-    return response.data;
+    final List<OrderItemData> loadedOrders = [];
+
+    late final OrderItemResponse? response;
+    try {
+      response = await OrderApi(dio).getOrder(provider.id!, provider.token!);
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+    if (response == null) {
+      return null;
+    }
+
+    response.response!.forEach((key, value) {
+      loadedOrders.add(value);
+    });
+    return loadedOrders;
   }
 
-  Future<Map<String, dynamic>> addOrder(
-    List<CartItem> cartProducts,
-    double total,
-    BuildContext ctx,
-  ) async {
+  void addOrder(OrderItemData order, BuildContext ctx,
+      List<CartItem> cartProducts) async {
     final AuthProvider provider = Provider.of<AuthProvider>(ctx, listen: false);
-    final DateTime timestamp = DateTime.now();
-    final url = Uri.https(
-      'myshop-f49b2-default-rtdb.firebaseio.com',
-      '/orders/${provider.id}.json',
-      {'auth': provider.token},
-    );
-    final response = await _api.post(
-      url.toString(),
-      data: {
-        'amount': total,
-        'dateTime': timestamp.toIso8601String(),
-        'products': cartProducts
-            .map((cp) => {
-                  'id': cp.id,
-                  'title': cp.title,
-                  'quantity': cp.quantity,
-                  'price': cp.price,
-                })
-            .toList(),
-      },
-    );
-    return {'id' : response.data['name'], 'time': timestamp};
+    try {
+      await OrderApi(dio).addOrder(
+        provider.id!,
+        provider.token!,
+        order.toJson(),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 }

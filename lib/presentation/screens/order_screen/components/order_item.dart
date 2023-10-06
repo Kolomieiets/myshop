@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../../services/models/order_item_data.dart' as ord;
+import '../../../../services/models/order_item_data.dart';
 import 'package:intl/intl.dart';
 
 import 'dart:math';
 
 class OrderItem extends StatefulWidget {
-  final ord.OrderItemData order;
+  final OrderItemData order;
 
   const OrderItem(this.order, {super.key});
 

@@ -45,7 +45,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                   ? Column(
                       children: [
                         UserProductItem(
-                          productsData.items[i].id!,
+                          productsData.items[i].id ?? '',
                           productsData.items[i].title,
                           productsData.items[i].imageUrl,
                         ),

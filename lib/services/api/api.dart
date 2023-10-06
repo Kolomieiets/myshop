@@ -23,7 +23,7 @@ class Api {
     return await _dio.patch(path, data: data);
   }
 
-  Future<Response<dynamic>> post(String path, {Object? data}) async {
-    return await _dio.post(path, data: data);
+  Future<Response<dynamic>> post(String path, {Object? data, Options? options,}) async {
+    return await _dio.post(path, data: data, options: options);
   }
 }

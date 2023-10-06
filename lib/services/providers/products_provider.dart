@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:my_shop/services/api/product_repository.dart';
 import 'package:my_shop/services/models/http_exception.dart';
@@ -40,17 +39,8 @@ class ProductsProvider with ChangeNotifier {
     BuildContext ctx,
   ) async {
     try {
-      final Response<dynamic> response =
-          await _repository.addProduct(product, ctx);
-      final Product newProduct = Product(
-        id: response.data['name'],
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        userId: product.userId,
-      );
-      _items.insert(0, newProduct);
+      final Product response = await _repository.addProduct(product, ctx);
+      _items.insert(0, response);
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -75,34 +65,36 @@ class ProductsProvider with ChangeNotifier {
     Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
     notifyListeners();
-    final response = await _repository.deleteProduct(id, ctx);
 
-    if (response.statusCode! >= 400) {
-      _items.insert(existingProductIndex, existingProduct);
+    try {
+      await _repository.deleteProduct(id, ctx);
+      existingProduct = null;
+    } catch (e) {
+      _items.insert(existingProductIndex, existingProduct!);
       notifyListeners();
       throw HttpException('Could not delete product');
     }
-    existingProduct = null;
   }
 
   Future<void> fetchAndSetProducts(BuildContext ctx) async {
     try {
-      final response = await _repository.fetchAndSetProduct(ctx);
-      final extractedData = response.data;
-      if (extractedData == null) {
+      final Map<String, Product>? response =
+          await _repository.fetchAndSetProduct(ctx);
+      if (response == null) {
         return;
       }
       final List<Product> loadedProducts = [];
-      extractedData.forEach((prodId, prodData) {
+      response.forEach((prodId, prodData) {
+        Product old = prodData;
         loadedProducts.add(
           Product(
             id: prodId,
-            userId: prodData['userId'],
-            title: prodData['title'],
-            description: prodData['description'],
-            price: prodData['price'],
-            imageUrl: prodData['imageUrl'],
-            isFavorite: prodData['isFavorite'] ?? false,
+            userId: old.userId,
+            title: old.title,
+            description: old.description,
+            price: old.price,
+            imageUrl: old.imageUrl,
+            isFavorite: prodData.isFavorite,
           ),
         );
       });
